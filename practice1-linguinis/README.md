@@ -138,7 +138,7 @@ El controlador solo llama al servicio. El servicio recibe un almacén con `list`
 
 `express.static` se instala en `src/app.js`, después de las rutas de la API y antes del 404. Sirve `public/` usando una ruta absoluta independiente del directorio de ejecución. Página y API comparten origen; se usan URLs relativas y no hace falta CORS. El manejador de errores es el último middleware.
 
-El filtrado se hace en el servidor para aplicar las mismas reglas a cualquier cliente y no tener que descargar toda la colección. El navegador solo construye la query con `URLSearchParams`. Comprueba `response.ok`, muestra actividad durante las peticiones, presenta errores junto a los campos, confirma los borrados y actualiza la lista sin recargar. Los nombres se insertan con `textContent` para que se traten como texto.
+El filtrado se hace en el servidor para aplicar las mismas reglas a cualquier cliente y no tener que descargar toda la colección. El navegador solo construye la query con `URLSearchParams`. La interfaz es un panel para el encargado: permite buscar por nombre y categoría, añadir platos, editar precio y disponibilidad, y retirar platos. Los filtros por disponibilidad y las ordenaciones siguen disponibles en la API, aunque se han retirado sus controles de la pantalla para simplificarla. Comprueba `response.ok`, muestra actividad durante las peticiones, presenta errores junto a los campos, confirma los borrados y actualiza la lista sin recargar. Los nombres se insertan con `textContent` para que se traten como texto.
 
 Las seis fotos se asocian a los nombres iniciales sin distinguir mayúsculas. Un plato nuevo o renombrado sin foto conocida muestra el logo; no se inventa una fotografía ni se incorpora subida de archivos. La página muestra seis resultados y solicita uno adicional para saber si hay una página siguiente.
 
@@ -160,7 +160,7 @@ Los requisitos externos al código son publicar la versión en GitHub y entregar
 
 ## Relación con los laboratorios
 
-Se retoman el tema, el nombre del restaurante, los seis platos, las imágenes aportadas, la estructura semántica, la paleta crema/rojo y los patrones Flexbox, Grid y breakpoint del laboratorio. Se corrigen las rutas absolutas de imágenes para que funcionen en otros equipos. Los ejercicios JavaScript disponibles son de sintaxis inicial; no se ha encontrado una API Express previa entre los archivos facilitados. Por eso el backend se implementa aquí desde cero y no se afirma reutilizar uno inexistente. No se incorporan login, Python ni páginas ajenas al recurso.
+Se retoman el tema, el nombre del restaurante, los seis platos, las imágenes aportadas, la estructura semántica, la identidad de la pizzería (ahora con una interfaz blanca y roja) y los patrones Flexbox, Grid y breakpoint del laboratorio. Se corrigen las rutas absolutas de imágenes para que funcionen en otros equipos. Los ejercicios JavaScript disponibles son de sintaxis inicial; no se ha encontrado una API Express previa entre los archivos facilitados. Por eso el backend se implementa aquí desde cero y no se afirma reutilizar uno inexistente. No se incorporan login, Python ni páginas ajenas al recurso.
 
 ## IA, revisión y entrega
 

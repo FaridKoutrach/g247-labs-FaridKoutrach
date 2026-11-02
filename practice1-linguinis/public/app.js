@@ -56,6 +56,7 @@ async function api(path, options = {}) {
 // Mensaje general para el usuario.
 function message(text, isError = false) {
   $('#message').textContent = text;
+  $('#message').hidden = !text;
   $('#message').classList.toggle('error', isError);
 }
 
@@ -82,6 +83,7 @@ function render(platos) {
   const visiblePlatos = platos.slice(0, pageSize);
   $('#empty').hidden = platos.length !== 0;
   $('#result-count').textContent = `${visiblePlatos.length} en esta página`;
+  $('#pagination').hidden = offset === 0 && currentCount <= pageSize;
   $('#page-label').textContent = `Página ${offset / pageSize + 1}`;
   for (const plato of visiblePlatos) {
     const row = $('#dish-template').content.firstElementChild.cloneNode(true);
@@ -92,7 +94,7 @@ function render(platos) {
     row.querySelector('h3').textContent = plato.nombre;
     row.querySelector('.dish-category').textContent = plato.categoria;
     row.querySelector('.dish-price').textContent = money.format(plato.precio);
-    row.querySelector('.badge').textContent = plato.disponible ? '● Disponible' : 'No disponible';
+    row.querySelector('.badge').textContent = plato.disponible ? 'Disponible' : 'Agotado';
     row.querySelector('.badge').classList.toggle('unavailable', !plato.disponible);
     row.querySelector('.edit').setAttribute('aria-label', `Editar ${plato.nombre}`);
     row.querySelector('.delete').setAttribute('aria-label', `Eliminar ${plato.nombre}`);
@@ -107,13 +109,10 @@ function render(platos) {
 async function refresh() {
   if (pending > 0) return; // No superponer dos búsquedas.
   const query = new URLSearchParams();
-  for (const field of ['search', 'categoria', 'disponible']) {
+  for (const field of ['search', 'categoria']) {
     const value = filters.elements[field].value.trim();
     if (value !== '') query.set(field, value);
   }
-  const [sort, order] = filters.elements.sort.value.split(':');
-  query.set('sort', sort);
-  query.set('order', order);
   // Un elemento adicional permite saber si existe una página siguiente.
   query.set('limit', pageSize + 1);
   query.set('offset', offset);
@@ -122,11 +121,10 @@ async function refresh() {
     render(platos);
     $('#stat-total').textContent = stats.total;
     $('#stat-available').textContent = stats.disponibles;
-    $('#stat-price').textContent = money.format(stats.precioMedio);
   } catch (error) {
     render([]);
     $('#empty').textContent = 'No se ha podido cargar la carta. Pulsa Buscar para volver a intentarlo.';
-    ['#stat-total', '#stat-available', '#stat-price'].forEach(id => { $(id).textContent = '—'; });
+    ['#stat-total', '#stat-available'].forEach(id => { $(id).textContent = '—'; });
     message(error.message, true);
     return false;
   }
@@ -139,7 +137,7 @@ function resetEditor() {
   editing = null;
   form.reset();
   clearErrors();
-  $('#form-title').textContent = 'Nuevo plato';
+  $('#form-title').textContent = 'Añadir plato';
   $('#save').textContent = 'Añadir plato';
   $('#cancel').hidden = true;
 }
@@ -201,7 +199,7 @@ form.addEventListener('submit', async event => {
   if (!data.nombre || data.nombre.length > 80) errors.push({ field: 'nombre', message: 'Escribe un nombre de entre 1 y 80 caracteres.' });
   if (!Number.isFinite(data.precio) || data.precio < 0.01 || data.precio > 100 || Math.abs(data.precio * 100 - Math.round(data.precio * 100)) > 1e-8) errors.push({ field: 'precio', message: 'Introduce entre 0,01 y 100 €, con hasta dos decimales.' });
   if (!['pizza', 'pasta'].includes(data.categoria)) errors.push({ field: 'categoria', message: 'Selecciona pizza o pasta.' });
-  if (errors.length) { showErrors(errors); message('Revisa los campos indicados.', true); return; }
+  if (errors.length) { showErrors(errors); return; }
   saving = true;
   $('#dish-fields').disabled = true;
   try {
@@ -211,18 +209,27 @@ form.addEventListener('submit', async event => {
     const wasEditing = Boolean(editing);
     resetEditor();
     offset = 0;
-    message(wasEditing ? 'Cambios guardados.' : 'Plato añadido. Si no aparece, comprueba los filtros activos.');
+    message(wasEditing ? 'Cambios guardados.' : 'Plato añadido. Puedes localizarlo con el buscador.');
     await refresh();
   } catch (error) {
-    message(error.message, true);
     // Se habilita antes de enfocar el primer campo con error.
     $('#dish-fields').disabled = false;
     if (error.errors) showErrors(error.errors);
+    else message(error.message, true);
   } finally {
     saving = false;
     $('#dish-fields').disabled = false;
     updateBusy();
   }
+});
+
+// Al corregir un campo se retira su aviso anterior; al guardar se valida de nuevo.
+form.addEventListener('input', event => {
+  const field = event.target.id;
+  if (!fields.includes(field)) return;
+  $(`#${field}-error`).textContent = '';
+  event.target.removeAttribute('aria-invalid');
+  $('#body-error').textContent = '';
 });
 
 // Eventos de búsqueda, paginación y cancelar. La primera carga ocurre al final.
@@ -231,4 +238,5 @@ filters.addEventListener('reset', () => { setTimeout(() => { offset = 0; message
 $('#previous').addEventListener('click', () => { offset = Math.max(0, offset - pageSize); message(''); refresh(); });
 $('#next').addEventListener('click', () => { offset += pageSize; message(''); refresh(); });
 $('#cancel').addEventListener('click', resetEditor);
+$('a[href="#editor"]').addEventListener('click', resetEditor);
 refresh();

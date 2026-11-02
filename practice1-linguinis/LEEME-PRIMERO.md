@@ -2,6 +2,26 @@
 
 No hace falta memorizarla palabra por palabra: el enunciado exige poder explicar lo entregado. Los comentarios de cada archivo te indican su función.
 
+## Quién usa la página
+
+El encargado de Linguinis mantiene la carta: añade una pizza nueva, cambia un precio o marca un plato agotado con Editar → desmarcar Disponible hoy → Guardar cambios. Eliminar retira el plato de la carta. Es un prototipo de gestión; los cambios se pierden al reiniciar el servidor.
+
+## Qué es cada cosa
+
+| Nombre | Para qué se usa aquí |
+| --- | --- |
+| HTML | Coloca títulos, lista, botones y formulario: public/index.html. |
+| CSS | Da colores, tamaños y distribución: public/styles.css. |
+| JavaScript del navegador | Lee el formulario y actualiza la pantalla: public/app.js. |
+| Node.js | Ejecuta JavaScript en tu ordenador como servidor. Lo arrancas con npm start. |
+| Express | Librería que conecta una dirección y un método HTTP con una función. |
+| API | Las rutas que reciben peticiones sobre platos y devuelven datos: src/routes/platos.js. |
+| fetch | Función del navegador que manda una petición a la API. |
+| JSON | Formato de texto para intercambiar datos, por ejemplo {"precio":10}. |
+| .webp, .jpg, .png | Formatos de imagen. Las fotos ya venían en tus laboratorios. |
+
+La API se ha creado escribiendo las rutas en src/routes/platos.js y conectándolas a Express en src/app.js con el prefijo /platos. Por ejemplo, router.get('/', controller.list) atiende GET /platos. Al arrancar src/server.js, el servidor escucha en el puerto 3000. Puedes ver los datos abriendo http://localhost:3000/platos.
+
 ## La idea en una frase
 
 El navegador manda una petición; Express decide qué función ejecuta, valida los datos, usa la memoria y devuelve JSON; el navegador actualiza la pantalla.
