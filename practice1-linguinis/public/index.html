@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linguinis · Gestión de la carta</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <!-- defer espera a que exista el HTML antes de ejecutar JavaScript. -->
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#carta">Saltar a la carta</a>
+  <header class="site-header">
+    <a class="brand" href="#inicio"><img src="/images/linguini.png" alt="Logo de Linguinis">Linguinis Pizzeria</a>
+    <nav aria-label="Principal"><a href="#carta">La carta</a><a href="#editor">Añadir plato</a></nav>
+  </header>
+  <main id="inicio">
+    <section class="intro" aria-labelledby="title">
+      <div><h1 id="title">Gestiona nuestra carta</h1><p>Añade platos, cambia sus precios y actualiza su disponibilidad.</p></div>
+      <img src="/images/napolitana.webp" alt="Pizza napolitana de la casa">
+    </section>
+    <!-- JavaScript rellena estos números con GET /platos/stats. -->
+    <section class="stats" aria-label="Resumen de toda la carta">
+      <div><span>Platos en carta</span><strong id="stat-total">—</strong></div>
+      <div><span>Disponibles</span><strong id="stat-available">—</strong></div>
+      <div><span>Precio medio</span><strong id="stat-price">—</strong></div>
+    </section>
+    <div class="status-bar">
+      <p id="loading" role="status" hidden>Cargando…</p>
+      <p id="message" role="status" aria-live="polite"></p>
+    </div>
+    <div class="workspace">
+      <section id="carta" aria-labelledby="list-title">
+        <div class="section-heading"><h2 id="list-title">Nuestra carta</h2><span id="result-count" class="muted"></span></div>
+        <!-- El formulario solo construye la consulta. El servidor filtra. -->
+        <form id="filters" class="filters" role="search">
+          <div class="search-field"><label for="search">Buscar un plato</label><input id="search" name="search" type="search" maxlength="80" placeholder="Ej. Margherita"></div>
+          <div><label for="category-filter">Categoría</label><select id="category-filter" name="categoria"><option value="">Todas</option><option value="pizza">Pizzas</option><option value="pasta">Pastas</option></select></div>
+          <div><label for="available-filter">Disponibilidad</label><select id="available-filter" name="disponible"><option value="">Todos</option><option value="true">Disponibles</option><option value="false">No disponibles</option></select></div>
+          <div><label for="sort">Ordenar por</label><select id="sort" name="sort"><option value="nombre:asc">Nombre A–Z</option><option value="nombre:desc">Nombre Z–A</option><option value="precio:asc">Menor precio</option><option value="precio:desc">Mayor precio</option></select></div>
+          <button class="button secondary" type="submit">Buscar</button><button class="text-button" type="reset">Limpiar filtros</button>
+        </form>
+        <div id="list-region" aria-busy="false">
+          <ul id="dish-list" class="dish-list" aria-label="Platos"></ul>
+          <p id="empty" class="empty" hidden>No hay platos que coincidan. Prueba otros filtros o añade un plato.</p>
+        </div>
+        <div class="pagination"><button id="previous" class="text-button" type="button" disabled>← Anterior</button><span id="page-label">Página 1</span><button id="next" class="text-button" type="button" disabled>Siguiente →</button></div>
+      </section>
+      <aside id="editor" class="editor" aria-labelledby="form-title">
+        <h2 id="form-title">Nuevo plato</h2>
+        <!-- Un mismo formulario sirve para crear (POST) y sustituir (PUT). -->
+        <form id="dish-form" novalidate>
+          <fieldset id="dish-fields">
+            <legend class="sr-only">Datos del plato</legend>
+            <div class="field">
+              <label for="nombre">Nombre del plato *</label>
+              <input id="nombre" required maxlength="80" placeholder="Ej. Pizza Quattro Formaggi" aria-describedby="nombre-error">
+              <small id="nombre-error" class="field-error"></small>
+            </div>
+            <div class="form-pair">
+              <div class="field"><label for="precio">Precio (€) *</label><input id="precio" type="number" min="0.01" max="100" step="0.01" required aria-describedby="precio-error"><small id="precio-error" class="field-error"></small></div>
+              <div class="field"><label for="categoria">Categoría *</label><select id="categoria" required aria-describedby="categoria-error"><option value="pizza">Pizza</option><option value="pasta">Pasta</option></select><small id="categoria-error" class="field-error"></small></div>
+            </div>
+            <div class="availability"><label for="disponible"><input id="disponible" type="checkbox" checked aria-describedby="disponible-error">Disponible en la carta</label><small id="disponible-error" class="field-error"></small></div>
+            <p id="body-error" class="field-error" role="alert"></p>
+            <button id="save" class="button primary" type="submit">Añadir plato</button>
+            <button id="cancel" class="text-button" type="button" hidden>Cancelar edición</button>
+          </fieldset>
+        </form>
+        <p class="form-note">* Campos obligatorios. Precio entre 0,01 y 100 €.</p>
+      </aside>
+    </div>
+  </main>
+  <footer>Linguinis Pizzeria · Farid Koutrach · Práctica 1</footer>
+  <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description">
+    <h2 id="delete-title">Eliminar plato</h2><p id="delete-description"></p>
+    <form method="dialog" class="dialog-actions"><button class="button secondary" value="cancel" autofocus>Cancelar</button><button class="button danger" value="delete">Sí, eliminar</button></form>
+  </dialog>
+  <!-- template no se muestra: JavaScript clona una fila por cada plato. -->
+  <template id="dish-template">
+    <li class="dish-row">
+      <img class="dish-image" alt="" width="76" height="76">
+      <div class="dish-info"><small class="dish-category"></small><h3></h3><span class="badge"></span></div>
+      <strong class="dish-price"></strong>
+      <div class="dish-actions"><button type="button" class="text-button edit">Editar</button><button type="button" class="text-button delete">Eliminar</button></div>
+    </li>
+  </template>
+</body>
+</html>

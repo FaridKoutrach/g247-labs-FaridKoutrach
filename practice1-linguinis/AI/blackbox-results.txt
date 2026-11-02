@@ -1,0 +1,19 @@
+Black-box API: http://localhost:3000; unique prefix: BB-79822792-6fb9-4b42-97ba-3f2dfdc134cc
+PASS GET collection and global stats against paginated public data
+PASS POST, Location, UUID, ignored id/extra, trim and GET
+PASS Multiple body validation errors and invalid JSON values
+PASS Inclusive price boundaries, maximum name length and repeated names
+PASS PUT replacement versus PATCH preservation, no-op rejection, atomic validation
+PASS Combined filters, case-insensitive trimmed search, sorting, stable ties and window
+PASS Strict unknown, repeated, malformed and combined query validation
+PASS Stats update after creation, PATCH, PUT and DELETE; unaffected by filtered reads
+PASS Malformed JSON, content type and 16 KB body limit
+PASS JSON 404 for missing id, unknown routes and unsupported methods
+PASS Cleanup: delete only records created by this run
+{
+  "groups": 11,
+  "passed": 11,
+  "failed": 0,
+  "responsesChecked": 163,
+  "leftoverOwnedIds": []
+}

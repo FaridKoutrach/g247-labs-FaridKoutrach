@@ -1,0 +1,18 @@
+{
+  "name": "practice1-linguinis",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gestor de platos de Linguinis Pizzeria — Foundations API",
+  "main": "src/app.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node AI/blackbox.cjs",
+    "test:blackbox": "node AI/blackbox.cjs"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

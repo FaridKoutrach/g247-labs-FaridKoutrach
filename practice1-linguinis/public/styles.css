@@ -1,0 +1,92 @@
+/* 1. Base: colores de Linguinis y tamaños que incluyen borde y relleno. */
+:root { --verde: #244c3b; --rojo: #a83f2c; --borde: #dedfd3; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f8f6f0; color: #263c30; font: 15px/1.5 Arial, sans-serif; }
+main, .site-header, footer { max-width: 1160px; margin: auto; padding: 20px; }
+h1, h2, h3 { font-family: Georgia, serif; font-weight: normal; }
+h1 { margin: 0; font-size: 32px; }
+h2 { margin: 0 0 16px; font-size: 26px; }
+h3, p { margin: 0 0 12px; }
+a { color: inherit; }
+[hidden] { display: none !important; }
+
+/* 2. Flexbox coloca la marca y la navegación en una misma fila. */
+.site-header, nav, .brand { display: flex; align-items: center; gap: 20px; }
+.site-header { justify-content: space-between; border-bottom: 1px solid var(--borde); }
+.brand { text-decoration: none; font: bold italic 27px Georgia, serif; }
+.brand img { width: 58px; height: 58px; object-fit: cover; border-radius: 50%; }
+nav { font-size: 13px; }
+.intro { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 20px; }
+.intro p { color: #60675b; margin-top: 8px; }
+.intro img { width: 180px; height: 100px; object-fit: cover; border-radius: 6px; }
+
+/* 3. Grid reparte el resumen en tres columnas y la zona de trabajo en dos. */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--borde); background: #fffefa; }
+.stats div { padding: 14px; }
+.stats div + div { border-left: 1px solid var(--borde); }
+.stats span { display: block; font-size: 12px; }
+.stats strong { font: 27px Georgia, serif; }
+.status-bar { min-height: 44px; padding-top: 10px; }
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; }
+.section-heading, .pagination { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.muted, .form-note, .pagination { color: #60675b; font-size: 12px; }
+.pagination { margin-top: 16px; }
+.editor { background: #fffefa; padding: 22px; border: 1px solid var(--borde); border-top: 3px solid var(--verde); }
+
+/* 4. Formularios: etiquetas visibles, controles grandes y foco de teclado. */
+.filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; background: #eeeee5; }
+.search-field { grid-column: 1 / -1; }
+label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; }
+input, select, button { font: inherit; }
+input:not([type=checkbox]), select { width: 100%; padding: 10px; border: 1px solid #c9ccbd; border-radius: 4px; background: #fffefa; color: inherit; }
+select { font-size: 12px; min-height: 44px; }
+input[type=checkbox] { accent-color: var(--verde); }
+button { cursor: pointer; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #af552e; outline-offset: 3px; }
+fieldset { padding: 0; margin: 0; border: 0; min-width: 0; }
+.field { margin-bottom: 16px; }
+.form-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.availability { margin: 12px 0 20px; }
+.availability label { display: flex; align-items: center; gap: 8px; }
+.button { min-height: 42px; padding: 10px 14px; border: 1px solid var(--verde); border-radius: 4px; font-size: 13px; }
+.primary { width: 100%; background: var(--verde); color: white; }
+.secondary { background: #fffefa; color: var(--verde); }
+.text-button { background: none; border: 0; color: var(--verde); padding: 8px; text-decoration: underline; font-size: 12px; }
+.delete, .field-error, #message.error { color: var(--rojo); }
+.field-error { display: block; font-size: 12px; margin-top: 5px; }
+.field-error:empty { display: none; }
+[aria-invalid=true] { border-color: var(--rojo) !important; }
+.form-note { margin-top: 16px; }
+
+/* 5. Cada plato es una fila: foto, información, precio y acciones. */
+.dish-list { list-style: none; padding: 0; margin: 0; }
+.dish-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--borde); }
+.dish-image { width: 76px; height: 76px; object-fit: cover; border-radius: 4px; }
+.dish-category { font-size: 10px; text-transform: uppercase; color: #60675b; }
+.dish-info h3 { margin: 3px 0 6px; font-size: 19px; overflow-wrap: anywhere; }
+.badge { display: inline-block; padding: 3px 7px; font-size: 11px; background: #e5eddf; border-radius: 3px; }
+.unavailable { background: #eee5da; color: #775137; }
+.dish-price { font: 20px Georgia, serif; white-space: nowrap; }
+.dish-actions { grid-column: 2 / -1; display: flex; justify-content: flex-end; gap: 12px; }
+.empty { padding: 25px; text-align: center; border: 1px dashed var(--borde); margin-top: 16px; }
+footer { margin-top: 30px; border-top: 1px solid var(--borde); color: #60675b; font-size: 12px; }
+
+/* 6. El diálogo confirma un borrado; Escape o Cancelar lo cierran. */
+dialog { max-width: 440px; width: calc(100% - 40px); padding: 26px; border: 1px solid var(--borde); border-radius: 6px; color: inherit; background: #fffefa; }
+dialog::backdrop { background: #15271fc9; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.danger { background: var(--rojo); color: white; border-color: var(--rojo); }
+.skip-link { position: absolute; top: -80px; padding: 10px; background: white; }
+.skip-link:focus { top: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* 7. Breakpoint: en móvil el formulario pasa debajo de la lista. */
+@media (max-width: 740px) {
+  .workspace { grid-template-columns: 1fr; }
+  .site-header { flex-wrap: wrap; }
+  .filters { grid-template-columns: 1fr 1fr; }
+  .intro img { display: none; }
+  .stats strong { font-size: 23px; }
+  .dish-price { font-size: 18px; }
+}
