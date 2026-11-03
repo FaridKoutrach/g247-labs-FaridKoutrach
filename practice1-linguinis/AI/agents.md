@@ -50,3 +50,15 @@ La ejecución HTTP fuera del sandbox pasó los 11 grupos, sin fallos ni ids prop
 - La comprobación del precio medio utiliza redondeo monetario a dos decimales, coherente con el ejemplo del contrato; el README no formaliza otro criterio para empates de redondeo.
 - `finally` limpia las creaciones identificadas por respuestas POST exitosas. Una caída del proceso o pérdida de la respuesta de una creación impediría garantizar esa limpieza; no ocurrió en la ejecución registrada.
 - No se afirma cobertura total ni ausencia de defectos fuera de los casos ejecutados. La revisión independiente se documenta por el responsable en `review-log.md`, que este tester no ha leído ni escrito.
+
+## Definición reutilizable del agente (añadida el 03-11-2026)
+
+El tester se ejecutó el 27-10-2026 con el prompt de arriba. Para poder volver a lanzarlo con Claude Code, el 03-11-2026 se pasó ese mismo encargo a un archivo de agente: [`.claude/agents/api-tester.md`](../.claude/agents/api-tester.md) (nombre, descripción, herramientas e instrucciones). Las reglas son las mismas: caja negra, solo lee el README y `AI/`, solo escribe en `AI/` y devuelve resultados reales.
+
+Resultado tras simplificar `src/` el 03-11-2026: 11 grupos, 163 respuestas, 0 fallos. La salida del 27-10 se resume en review-log.md; `blackbox-results.txt` contiene ahora la de la ejecución del 03-11 (ver abajo).
+
+La convención de pruebas que ya seguía `blackbox.cjs` (archivo único en `AI/`, `fetch` + `assert`, grupos PASS/FAIL, prefijo `BB-<uuid>`, borrado solo de lo propio, resumen JSON) se guardó también el 03-11-2026 como skill: [`.claude/skills/api-test-conventions/SKILL.md`](../.claude/skills/api-test-conventions/SKILL.md). El agente la carga con `skills: api-test-conventions`. Además se acotó qué secciones del README debe leer, para que gaste menos tokens y no se desvíe.
+
+## Ejecución del 03-11-2026 (tester)
+
+Se volvió a ejecutar `npm test` contra el servidor ya arrancado, sin cambiar `blackbox.cjs`: 11/11 grupos PASS, 163 respuestas comprobadas, 0 fallos y `leftoverOwnedIds: []`. La salida está en [blackbox-results.txt](blackbox-results.txt) y el reporte en [tester-report.md](tester-report.md).

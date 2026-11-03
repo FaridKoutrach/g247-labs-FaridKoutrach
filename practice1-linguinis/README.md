@@ -1,6 +1,6 @@
 # Linguinis Pizzeria · Foundations API
 
-**Integrante:** Farid Koutrach. Modalidad individual.
+**Integrantes:** Farid Koutrach y Jorge Nuño. Modalidad en pareja.
 
 **Tema:** la pizzería de los laboratorios del bloque I. El único recurso es el **plato** (`/platos`): las pizzas y las pastas son categorías del mismo recurso, no recursos distintos.
 
@@ -121,26 +121,26 @@ Respuestas respectivas: 204 sin cuerpo; 404 `{"error":"Plato no encontrado."}`; 
 
 ```text
 src/server.js                  Inicio y puerto
-src/app.js                     Configuración Express exportable
-src/routes/platos.js           Rutas ligeras; /stats antes de /:id
-src/controllers/platosController.js  Traducción HTTP
-src/services/platosService.js  Operaciones, filtros y agregado
-src/data/store.js              Adaptador sustituible de memoria
+src/app.js                     Monta Express (middlewares y rutas) y exporta app
+src/routes/platos.js           Rutas, comprobación de query y Content-Type; /stats antes de /:id
+src/controllers/platosController.js  Lee req, valida y responde con el status
+src/services/platosService.js  Filtros, orden, paginación y estadísticas
+src/data/store.js              Array en memoria (getAll, getById, create, update, remove)
 src/validators/platoValidator.js     Validación completa/parcial
 src/validators/queryValidator.js     Consulta estricta
-src/middleware/logger.js      Método, URL, estado y duración
+src/middleware/logger.js      Escribe método y URL de cada petición
 src/middleware/errors.js      404 y errores centralizados
 public/                       HTML, CSS, JS e imágenes locales
 AI/                           Tester HTTP, contrato y revisión
 ```
 
-El controlador solo llama al servicio. El servicio recibe un almacén con `list`, `get`, `create`, `replace` y `remove`; no conoce el Map interno. Sustituir el adaptador permite cambiar el almacenamiento. `createApp({ store })` permite conectar otro adaptador.
+El controlador valida con los validadores y llama al servicio; nunca toca el almacén. El servicio es el único que usa `data/store.js` y solo a través de cinco funciones: `getAll`, `getById`, `create`, `update` y `remove`. Para cambiar la memoria por una base de datos bastaría con escribir otro `store.js` con esas mismas funciones, sin tocar rutas ni controlador. Las respuestas de error 400/404/415 se devuelven directamente con `return res.status(...).json(...)`; el manejador de errores centralizado recoge los errores de `express.json()` (JSON mal formado → 400, cuerpo > 16 KB → 413) y cualquier fallo inesperado (500).
 
 `express.static` se instala en `src/app.js`, después de las rutas de la API y antes del 404. Sirve `public/` usando una ruta absoluta independiente del directorio de ejecución. Página y API comparten origen; se usan URLs relativas y no hace falta CORS. El manejador de errores es el último middleware.
 
-El filtrado se hace en el servidor para aplicar las mismas reglas a cualquier cliente y no tener que descargar toda la colección. El navegador solo construye la query con `URLSearchParams`. La interfaz es un panel para el encargado: permite buscar por nombre y categoría, añadir platos, editar precio y disponibilidad, y retirar platos. Los filtros por disponibilidad y las ordenaciones siguen disponibles en la API, aunque se han retirado sus controles de la pantalla para simplificarla. Comprueba `response.ok`, muestra actividad durante las peticiones, presenta errores junto a los campos, confirma los borrados y actualiza la lista sin recargar. Los nombres se insertan con `textContent` para que se traten como texto.
+El filtrado se hace en el servidor para aplicar las mismas reglas a cualquier cliente y no tener que descargar toda la colección. El navegador solo construye la query con `URLSearchParams`. La página **no es la web pública para clientes**: es el panel del personal de la pizzería (por eso tiene crear, editar y borrar, y el límite de precio de 0,01 a 100 € es una regla de validación para quien mantiene la carta). La interfaz es un panel para el encargado: permite buscar por nombre y categoría, añadir platos, editar precio y disponibilidad, y retirar platos. Los filtros por disponibilidad y las ordenaciones siguen disponibles en la API, aunque se han retirado sus controles de la pantalla para simplificarla. Comprueba `response.ok`, muestra actividad durante las peticiones, presenta errores junto a los campos, confirma los borrados y actualiza la lista sin recargar. Los nombres se insertan con `textContent` para que se traten como texto.
 
-Las seis fotos se asocian a los nombres iniciales sin distinguir mayúsculas. Un plato nuevo o renombrado sin foto conocida muestra el logo; no se inventa una fotografía ni se incorpora subida de archivos. La página muestra seis resultados y solicita uno adicional para saber si hay una página siguiente.
+Las seis fotos se asocian a los nombres iniciales sin distinguir mayúsculas. Un plato nuevo sin foto conocida muestra un dibujo genérico de su categoría (`images/pizza-generica.svg` o `images/pasta-generica.svg`); no se buscan fotos en internet ni se incorpora subida de archivos. La lista muestra todos los resultados de la consulta (como máximo 100, el `limit` por defecto de la API).
 
 ## Comprobación contra el enunciado
 
@@ -149,7 +149,7 @@ Las seis fotos se asocian a los nombres iniciales sin distinguir mayúsculas. Un
 | Tema propio y cinco campos | Platos de los laboratorios: id, nombre, precio, disponible, categoria. |
 | CRUD, PUT y PATCH, Location y 204 | routes/platos.js y controllers/platosController.js. |
 | Capas separadas y memoria sustituible | routes → controllers → services → data/store.js. |
-| Filtros, dos ordenaciones y ventana combinables | validators/queryValidator.js y services/platosService.js. |
+| Filtros, dos ordenaciones y ventana combinables | validators/queryValidator.js y la función `list` de services/platosService.js. |
 | Agregado calculado y errores JSON | /platos/stats y middleware/errors.js. |
 | Validación completa/parcial y todas las incidencias | validators/platoValidator.js. |
 | HTML semántico, fetch, errores de campo, carga y lista vacía | public/index.html y public/app.js. |
@@ -160,10 +160,10 @@ Los requisitos externos al código son publicar la versión en GitHub y entregar
 
 ## Relación con los laboratorios
 
-Se retoman el tema, el nombre del restaurante, los seis platos, las imágenes aportadas, la estructura semántica, la identidad de la pizzería (ahora con una interfaz blanca y roja) y los patrones Flexbox, Grid y breakpoint del laboratorio. Se corrigen las rutas absolutas de imágenes para que funcionen en otros equipos. Los ejercicios JavaScript disponibles son de sintaxis inicial; no se ha encontrado una API Express previa entre los archivos facilitados. Por eso el backend se implementa aquí desde cero y no se afirma reutilizar uno inexistente. No se incorporan login, Python ni páginas ajenas al recurso.
+Se retoman el tema, el nombre del restaurante, los seis platos, las imágenes aportadas, la estructura semántica, la identidad de la pizzería (ahora con colores de pizzería: tomate, albahaca y harina, y la carta en tarjetas con foto) y los patrones Flexbox, Grid y breakpoint del laboratorio. Se corrigen las rutas absolutas de imágenes para que funcionen en otros equipos. Los ejercicios JavaScript disponibles son de sintaxis inicial; no se ha encontrado una API Express previa entre los archivos facilitados. Por eso el backend se implementa aquí desde cero y no se afirma reutilizar uno inexistente. No se incorporan login, Python ni páginas ajenas al recurso.
 
 ## IA, revisión y entrega
 
-`AI/agents.md` documenta el único tester agent, su contrato y sus comprobaciones HTTP. `AI/review-log.md` distingue las aportaciones, la revisión real y las limitaciones. La aplicación se ha elaborado con asistencia de IA; el estudiante debe revisar y poder explicar el contenido antes de entregar.
+`AI/agents.md` documenta el único tester agent, su contrato y sus comprobaciones HTTP. `AI/review-log.md` distingue las aportaciones, la revisión real y las limitaciones. La aplicación se ha elaborado con asistencia de IA (Codex y Claude), incluidos los comentarios explicativos del código, que se han mantenido para entender y explicar cada parte; el estudiante debe revisar y poder explicar el contenido antes de entregar.
 
 La entrega en Canvas es el **3 de noviembre de 2026**, antes de la hora indicada en la actividad. La entrega requiere un repositorio GitHub y el SHA de la versión publicada. No basta con esta carpeta local. Tras publicar, ejecutar `git rev-parse HEAD` en el repositorio para obtener el SHA. No se inventan contribuciones, tutorías pasadas ni identidades de colaboradores.

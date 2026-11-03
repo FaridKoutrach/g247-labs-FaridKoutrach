@@ -1,4 +1,7 @@
-Black-box API: http://localhost:3000; unique prefix: BB-79822792-6fb9-4b42-97ba-3f2dfdc134cc
+> practice1-linguinis@1.0.0 test
+> node AI/blackbox.cjs
+
+Black-box API: http://localhost:3000; unique prefix: BB-43692158-1445-4303-93d4-88bc422064ca
 PASS GET collection and global stats against paginated public data
 PASS POST, Location, UUID, ignored id/extra, trim and GET
 PASS Multiple body validation errors and invalid JSON values

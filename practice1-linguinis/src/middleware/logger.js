@@ -1,12 +1,10 @@
-// LOGGER: escribe método, URL, estado y tiempo cuando termina cada respuesta.
+// LOGGER: un middleware que escribe en la terminal cada petición.
+// Ejemplo de lo que verás: GET /platos?categoria=pizza
 function logger(req, res, next) {
-  const started = Date.now();
-  res.on('finish', () => {
-    if (process.env.NODE_ENV !== 'test') {
-      console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - started}ms`);
-    }
-  });
-  next();
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(`${req.method} ${req.originalUrl}`);
+  }
+  next(); // ¡Importante! Sin next() la petición se quedaría aquí parada.
 }
 
-module.exports = { logger };
+module.exports = logger;

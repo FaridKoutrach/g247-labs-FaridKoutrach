@@ -1,72 +1,82 @@
-// SERVICIO: contiene las operaciones y conecta validadores con almacenamiento.
-const { validatePlato } = require('../validators/platoValidator');
-const { validateQuery } = require('../validators/queryValidator');
+// SERVICIO: la "cocina". Hace el trabajo con los datos (filtrar, ordenar,
+// calcular estadísticas) y es el único que habla con el almacén.
+// No sabe nada de req ni de res: eso es cosa del controlador.
+const store = require('../data/store');
 
-// Si hay incidencias, lanza un error que recogerá el middleware centralizado.
-function checked(result) {
-  if (result.errors.length) {
-    const error = new Error('Validación incorrecta.');
-    error.status = 400;
-    error.errors = result.errors;
-    throw error;
+// Lista con filtros, orden y paginación.
+// "opciones" ya viene validada, p. ej.:
+// { search: 'pizza', categoria: 'pizza', sort: 'precio', order: 'desc', limit: 6, offset: 0 }
+function list(opciones) {
+  let resultado = store.getAll();
+
+  // 1) FILTRAR: nos quedamos solo con los platos que cumplen cada condición.
+  const texto = opciones.search.toLowerCase();
+  resultado = resultado.filter(plato => plato.nombre.toLowerCase().includes(texto));
+
+  if (opciones.disponible !== undefined) {
+    resultado = resultado.filter(plato => plato.disponible === opciones.disponible);
   }
-  return result.data;
+  if (opciones.categoria) {
+    resultado = resultado.filter(plato => plato.categoria === opciones.categoria);
+  }
+
+  // 2) ORDENAR: sort compara los platos de dos en dos (a y b).
+  //    Número negativo = a va antes; positivo = b va antes; 0 = se quedan como estaban.
+  resultado.sort((a, b) => {
+    let comparacion;
+    if (opciones.sort === 'precio') {
+      comparacion = a.precio - b.precio;
+    } else {
+      comparacion = a.nombre.localeCompare(b.nombre, 'es'); // Orden alfabético en español.
+    }
+    if (opciones.order === 'desc') return -comparacion; // Al revés.
+    return comparacion;
+  });
+
+  // 3) PAGINAR: slice corta un trozo. offset = cuántos me salto; limit = cuántos devuelvo.
+  return resultado.slice(opciones.offset, opciones.offset + opciones.limit);
 }
 
-// Recibe el almacén como parámetro: se puede sustituir sin cambiar el controlador.
-function createPlatosService(store) {
-  function get(id) {
-    const plato = store.get(id);
-    if (!plato) {
-      const error = new Error('Plato no encontrado.');
-      error.status = 404;
-      throw error;
-    }
-    return plato;
+function getById(id) {
+  return store.getById(id);
+}
+
+function create(datos) {
+  return store.create(datos);
+}
+
+function update(id, datos) {
+  return store.update(id, datos);
+}
+
+function remove(id) {
+  store.remove(id);
+}
+
+// Estadísticas: se calculan cada vez que alguien las pide.
+function stats() {
+  const platos = store.getAll();
+
+  // Sumamos en CÉNTIMOS (números enteros) para que no salgan cosas como 9.299999.
+  let totalCentimos = 0;
+  for (const plato of platos) {
+    totalCentimos += Math.round(plato.precio * 100);
   }
+
+  let precioMedio = 0; // Si no hay platos, la media es 0 (no podemos dividir entre 0).
+  if (platos.length > 0) {
+    precioMedio = Math.round(totalCentimos / platos.length) / 100; // Volvemos a euros.
+  }
+
   return {
-    checkQuery: query => checked(validateQuery(query)),
-    list(query) {
-      const options = checked(validateQuery(query, { collection: true }));
-      // filter selecciona elementos; sort los ordena; slice aplica la ventana.
-      const result = store.list().filter(plato =>
-        plato.nombre.toLowerCase().includes(options.search.toLowerCase()) &&
-        (options.disponible === undefined || plato.disponible === options.disponible) &&
-        (!options.categoria || plato.categoria === options.categoria)
-      );
-      result.sort((a, b) => {
-        const comparison = options.sort === 'precio' ? a.precio - b.precio : a.nombre.localeCompare(b.nombre, 'es');
-        return options.order === 'desc' ? -comparison : comparison;
-      });
-      return result.slice(options.offset, options.offset + options.limit);
-    },
-    get,
-    create: body => store.create(checked(validatePlato(body))),
-    update(id, body, partial) {
-      const current = get(id);
-      const data = checked(validatePlato(body, { partial }));
-      // ... copia campos. PATCH mezcla antiguos y nuevos; PUT usa solo los nuevos.
-      return store.replace(id, partial ? { ...current, ...data } : data);
-    },
-    remove(id) {
-      get(id);
-      store.remove(id);
-    },
-    stats() { // Se calcula en cada petición, no se guarda en memoria como otro dato.
-      const platos = store.list();
-      // Sumar céntimos enteros evita errores binarios al redondear dinero.
-      const totalCents = platos.reduce((total, plato) => total + Math.round(plato.precio * 100), 0);
-      return {
-        total: platos.length,
-        disponibles: platos.filter(plato => plato.disponible).length,
-        precioMedio: platos.length ? Math.round(totalCents / platos.length) / 100 : 0,
-        porCategoria: {
-          pizza: platos.filter(plato => plato.categoria === 'pizza').length,
-          pasta: platos.filter(plato => plato.categoria === 'pasta').length
-        }
-      };
+    total: platos.length,
+    disponibles: platos.filter(plato => plato.disponible).length,
+    precioMedio: precioMedio,
+    porCategoria: {
+      pizza: platos.filter(plato => plato.categoria === 'pizza').length,
+      pasta: platos.filter(plato => plato.categoria === 'pasta').length
     }
   };
 }
 
-module.exports = { createPlatosService };
+module.exports = { list, getById, create, update, remove, stats };

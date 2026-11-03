@@ -13,12 +13,12 @@
   <a class="skip-link" href="#carta">Saltar a la carta</a>
   <header class="site-header">
     <a class="brand" href="#inicio"><img src="/images/linguini.png" alt="">Linguinis<span>PIZZERIA</span></a>
-    <span class="header-label">Panel del restaurante</span>
+    <span class="header-label">Zona de cocina · solo personal</span>
   </header>
   <main id="inicio">
     <section class="intro" aria-labelledby="title">
-      <div><p class="eyebrow">GESTIÓN DE LA CARTA</p><h1 id="title">Tu carta, al día.</h1><p>Añade platos, ajusta precios y marca lo que está disponible hoy.</p></div>
-      <a class="button secondary" href="#editor">+ Añadir plato</a>
+      <div><p class="eyebrow">PANEL DEL PERSONAL</p><h1 id="title">La carta de Linguinis</h1><p>Desde aquí el equipo mantiene al día la carta que ven los clientes: añade especialidades, ajusta precios y marca lo que se ha agotado hoy.</p></div>
+      <a class="button hero-button" href="#editor">+ Nueva especialidad</a>
     </section>
     <div class="status-bar">
       <p id="loading" role="status" hidden>Cargando…</p>
@@ -27,24 +27,23 @@
     <div class="workspace">
       <section id="carta" class="menu-panel" aria-labelledby="list-title">
         <!-- GET /platos/stats calcula el resumen de toda la carta. -->
-        <div class="section-heading"><h2 id="list-title">Platos de la carta</h2><span class="muted"><b id="stat-available">—</b> de <b id="stat-total">—</b> disponibles</span></div>
+        <div class="section-heading"><h2 id="list-title">Nuestra carta</h2><span class="muted"><b id="stat-available">—</b> de <b id="stat-total">—</b> disponibles</span></div>
         <!-- El navegador envía la búsqueda y la categoría; la API filtra. -->
         <form id="filters" class="filters" role="search">
           <div class="search-field"><label for="search">Buscar plato</label><input id="search" name="search" type="search" maxlength="80" placeholder="Nombre del plato…"></div>
           <div><label for="category-filter">Categoría</label><select id="category-filter" name="categoria"><option value="">Todas</option><option value="pizza">Pizzas</option><option value="pasta">Pastas</option></select></div>
           <button class="button secondary" type="submit">Buscar</button>
-          <button class="text-button" type="reset">Limpiar</button>
+          <button id="clear" class="text-button" type="button">Limpiar</button>
         </form>
         <div class="list-caption"><span>PLATO / DISPONIBILIDAD</span><span id="result-count"></span></div>
-        <div id="list-region" aria-busy="false">
+        <div id="list-region">
           <ul id="dish-list" class="dish-list" aria-label="Platos"></ul>
           <p id="empty" class="empty" hidden>No hay platos que coincidan. Prueba otra búsqueda.</p>
         </div>
-        <div id="pagination" class="pagination" hidden><button id="previous" class="text-button" type="button" disabled>← Anterior</button><span id="page-label">Página 1</span><button id="next" class="text-button" type="button" disabled>Siguiente →</button></div>
       </section>
       <aside id="editor" class="editor" aria-labelledby="form-title">
         <h2 id="form-title">Añadir plato</h2>
-        <p class="editor-help">Completa los datos y guarda en la carta.</p>
+        <p class="editor-help">Escribe la nueva especialidad como aparecerá en la carta.</p>
         <!-- Se reutiliza el formulario: POST crea y PUT guarda una edición. -->
         <form id="dish-form" novalidate>
           <fieldset id="dish-fields">
@@ -69,19 +68,6 @@
     </div>
     <p class="usage-note">¿Se ha agotado un plato? Pulsa <strong>Editar</strong>, desmarca «Disponible hoy» y guarda los cambios.</p>
   </main>
-  <footer><span>Linguinis Pizzeria · Gestión de la carta</span><span>Farid Koutrach · Práctica 1</span></footer>
-  <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description">
-    <h2 id="delete-title">Eliminar plato</h2><p id="delete-description"></p>
-    <form method="dialog" class="dialog-actions"><button class="button secondary" value="cancel" autofocus>Cancelar</button><button class="button primary" value="delete">Sí, eliminar</button></form>
-  </dialog>
-  <!-- JavaScript clona esta plantilla por cada plato recibido de la API. -->
-  <template id="dish-template">
-    <li class="dish-row">
-      <img class="dish-image" alt="" width="56" height="56">
-      <div class="dish-info"><h3></h3><div class="dish-meta"><small class="dish-category"></small><span class="badge"></span></div></div>
-      <strong class="dish-price"></strong>
-      <div class="dish-actions"><button type="button" class="text-button edit">Editar</button><button type="button" class="text-button delete">Eliminar</button></div>
-    </li>
-  </template>
+  <footer><span>Linguinis Pizzeria · Panel del personal</span><span>Farid Koutrach y Jorge Nuño · Práctica 1</span></footer>
 </body>
 </html>

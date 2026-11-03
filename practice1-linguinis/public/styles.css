@@ -1,99 +1,129 @@
-/* 1. Base: blanco, rojo y una tipografía sencilla. */
-:root { --rojo: #b52e30; --texto: #252525; --gris: #686868; --borde: #e8e5e3; }
+/* 1. Base: colores de pizzería (tomate, albahaca, masa y harina) y tipografía. */
+:root {
+  --tomate: #b8322a;
+  --tomate-oscuro: #8e231d;
+  --albahaca: #2f6b3a;
+  --masa: #3a2a1e;
+  --harina: #fbf6ec;
+  --papel: #fffdf8;
+  --gris: #6f6458;
+  --borde: #eadfcd;
+}
 * { box-sizing: border-box; }
-body { margin: 0; background: #faf9f8; color: var(--texto); font: 14px/1.5 Arial, sans-serif; }
-main, .site-header, footer { max-width: 1160px; margin: auto; padding: 24px; }
+body { margin: 0; background: var(--harina); color: var(--masa); font: 15px/1.5 "Segoe UI", Arial, sans-serif; }
+/* Franja tricolor italiana arriba del todo. */
+body::before { content: ""; display: block; height: 6px; background: linear-gradient(90deg, var(--albahaca) 33%, white 33% 66%, var(--tomate) 66%); }
+main, .site-header, footer { max-width: 1180px; margin: auto; padding: 24px; }
 h1, h2, h3, p { margin: 0; }
-h1 { font-size: 36px; line-height: 1.2; letter-spacing: -1px; margin: 7px 0 10px; }
-h2 { font-size: 18px; }
+h1, h2, h3, .brand { font-family: Georgia, "Times New Roman", serif; }
+h1 { font-size: 44px; line-height: 1.1; margin: 8px 0 12px; }
+h2 { font-size: 24px; }
 a { color: inherit; }
 [hidden] { display: none !important; }
 
-/* 2. Flexbox alinea los elementos del encabezado y las acciones. */
-.site-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--borde); padding-top: 16px; padding-bottom: 16px; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: bold 25px Georgia, serif; }
-.brand img { width: 44px; height: 44px; object-fit: contain; }
-.brand span { color: var(--rojo); font: bold 10px Arial, sans-serif; letter-spacing: 2px; border-left: 1px solid var(--borde); padding-left: 12px; }
-.header-label, .muted, .form-note { color: var(--gris); font-size: 12px; }
-.intro { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 12px 0 28px; }
-.intro p:not(.eyebrow) { color: var(--gris); }
-.eyebrow { color: var(--rojo); font-size: 10px; letter-spacing: 2px; font-weight: bold; }
-.status-bar p { padding: 10px 14px; margin-bottom: 16px; border-radius: 6px; background: #edf5ef; }
-.status-bar p.error { color: var(--rojo); background: #fff0ef; }
+/* 2. Flexbox: cabecera roja con la marca a la izquierda y la etiqueta a la derecha. */
+.site-header { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; padding-bottom: 12px; background: var(--tomate); border-radius: 0 0 18px 18px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 30px; font-weight: bold; color: white; }
+.brand img { width: 54px; height: 54px; object-fit: contain; background: white; border-radius: 50%; padding: 3px; }
+.brand span { color: #ffd3a8; font: bold 11px Arial, sans-serif; letter-spacing: 3px; border-left: 2px solid rgba(255, 255, 255, .4); padding-left: 12px; }
+.header-label { color: white; font-size: 12px; border: 1px dashed rgba(255, 255, 255, .6); border-radius: 99px; padding: 6px 12px; }
+.muted, .form-note { color: var(--gris); font-size: 13px; }
 
-/* 3. Grid separa la lista del formulario. En móvil se apilan. */
-.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 24px; align-items: start; }
-.menu-panel, .editor { background: white; border: 1px solid var(--borde); border-radius: 10px; }
-.section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 22px 20px 16px; }
-.editor { padding: 24px; border-top: 3px solid var(--rojo); scroll-margin-top: 20px; }
-.editor-help { color: var(--gris); font-size: 12px; margin: 6px 0 24px; }
-.filters { display: grid; grid-template-columns: minmax(0, 1fr) 110px auto auto; align-items: end; gap: 10px; padding: 0 20px 20px; }
-label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 7px; }
+/* Portada: una foto de pizza con una capa oscura para que el texto se lea. */
+.intro {
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
+  padding: 56px 40px 40px; margin: 24px 0 28px; border-radius: 18px; color: white;
+  background: linear-gradient(90deg, rgba(110, 18, 12, .92) 35%, rgba(110, 18, 12, .4)), url("/images/margherita.jpg") center / cover;
+}
+.intro p:not(.eyebrow) { max-width: 520px; color: #f3e8da; }
+.eyebrow { color: #ffd3a8; font-size: 11px; letter-spacing: 3px; font-weight: bold; }
+.status-bar p { padding: 12px 16px; margin: -10px 0 18px; border-radius: 10px; background: #e6f1e6; color: var(--albahaca); font-weight: bold; }
+.status-bar p.error { color: var(--tomate-oscuro); background: #fbe6e3; }
+
+/* 3. Grid: la carta a la izquierda y el formulario a la derecha. En móvil se apilan. */
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 28px; align-items: start; }
+.menu-panel, .editor { background: var(--papel); border: 1px solid var(--borde); border-radius: 18px; }
+.section-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 26px 24px 18px; }
+.section-heading h2 { color: var(--tomate); font-size: 30px; }
+.editor { padding: 26px; position: sticky; top: 16px; scroll-margin-top: 20px; border-top: 6px solid var(--tomate); }
+.editor h2 { color: var(--tomate); }
+.editor-help { color: var(--gris); font-size: 13px; margin: 6px 0 22px; }
+.filters { display: grid; grid-template-columns: minmax(0, 1fr) 130px auto auto; align-items: end; gap: 10px; padding: 0 24px 22px; }
+label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 7px; }
 input, select, button { font: inherit; }
-input:not([type=checkbox]), select { width: 100%; min-height: 42px; padding: 10px; border: 1px solid #d8d5d3; border-radius: 6px; background: white; color: inherit; font-size: 13px; }
-input[type=checkbox] { accent-color: var(--rojo); width: 16px; height: 16px; margin: 0; }
+input:not([type=checkbox]), select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #dccfb9; border-radius: 10px; background: white; color: inherit; font-size: 14px; }
+input[type=checkbox] { accent-color: var(--tomate); width: 18px; height: 18px; margin: 0; }
 button { cursor: pointer; }
 button:disabled { opacity: .45; cursor: not-allowed; }
-:is(button, a, input, select):focus-visible { outline: 3px solid var(--rojo); outline-offset: 3px; }
+/* Foco visible: quien usa el teclado ve siempre dónde está. */
+:is(button, a, input, select):focus-visible { outline: 3px solid #f0a020; outline-offset: 3px; }
 fieldset { padding: 0; margin: 0; border: 0; min-width: 0; }
 .field { margin-bottom: 18px; }
 .form-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.availability { margin: 4px 0 24px; padding: 12px; background: #faf9f8; border-radius: 6px; }
-.availability label { display: flex; align-items: center; gap: 8px; }
-.availability small { font-size: 11px; color: var(--gris); }
-.button { display: inline-block; min-height: 42px; padding: 10px 14px; border: 1px solid var(--borde); border-radius: 6px; font-size: 12px; font-weight: bold; text-decoration: none; text-align: center; }
-.primary { width: 100%; background: var(--rojo); border-color: var(--rojo); color: white; }
-.primary:hover { background: #962426; }
-.secondary { background: white; color: var(--texto); }
-.secondary:hover { background: #f5f2f0; }
-.text-button { background: none; border: 0; color: var(--gris); padding: 10px 6px; font-size: 12px; }
+.availability { margin: 4px 0 24px; padding: 14px; background: #fbeae6; border-radius: 10px; }
+.availability label { display: flex; align-items: center; gap: 10px; }
+.availability small { font-size: 12px; color: var(--gris); }
+.button { display: inline-block; min-height: 44px; padding: 10px 18px; border: 1px solid var(--borde); border-radius: 99px; font-size: 14px; font-weight: bold; text-decoration: none; text-align: center; }
+.primary { width: 100%; background: var(--tomate); border-color: var(--tomate); color: white; }
+.primary:hover { background: var(--tomate-oscuro); }
+.secondary { background: white; color: var(--masa); }
+.secondary:hover { background: #f6efe3; }
+.hero-button { background: white; border-color: white; color: var(--tomate); white-space: nowrap; }
+.hero-button:hover { background: #ffe9e5; }
+.text-button { background: none; border: 0; color: var(--gris); padding: 8px 6px; font-size: 13px; }
 .text-button:hover { text-decoration: underline; }
-.edit { color: var(--rojo); font-weight: bold; }
-.field-error { display: block; color: var(--rojo); font-size: 12px; margin: 5px 0; }
+.edit { color: var(--tomate); font-weight: bold; }
+.delete { color: var(--gris); }
+.field-error { display: block; color: var(--tomate-oscuro); font-size: 12px; margin: 5px 0; }
 .field-error:empty { display: none; }
-[aria-invalid=true] { border-color: var(--rojo) !important; }
-.form-note { font-size: 10px; margin-top: 16px; }
+[aria-invalid=true] { border-color: var(--tomate) !important; background: #fff6f4 !important; }
+.form-note { font-size: 11px; margin-top: 16px; }
 
-/* 4. Una fila reúne foto, nombre, disponibilidad, precio y acciones. */
-.list-caption { display: flex; justify-content: space-between; padding: 10px 20px; background: #faf9f8; border-block: 1px solid var(--borde); color: var(--gris); font-size: 10px; letter-spacing: .6px; }
-.dish-list { list-style: none; padding: 0; margin: 0; }
-.dish-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 15px 20px; }
-.dish-row + .dish-row { border-top: 1px solid var(--borde); }
-.dish-image { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; }
-.dish-info h3 { font-size: 14px; margin-bottom: 6px; overflow-wrap: anywhere; }
-.dish-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-.dish-category { font-size: 11px; color: var(--gris); text-transform: capitalize; }
-.badge { color: #346347; background: #edf5ef; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-.unavailable { color: #706256; background: #f2eeea; }
-.dish-price { font-size: 14px; white-space: nowrap; }
-.dish-actions { display: flex; gap: 3px; }
-.empty { padding: 35px 20px; color: var(--gris); text-align: center; }
-.pagination { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-top: 1px solid var(--borde); font-size: 12px; }
-.usage-note { color: var(--gris); font-size: 12px; margin-top: 20px; }
-footer { display: flex; justify-content: space-between; gap: 12px; color: var(--gris); font-size: 11px; border-top: 1px solid var(--borde); margin-top: 16px; }
+/* 4. La carta: cada plato es una tarjeta con su foto (Grid de tarjetas). */
+.list-caption { display: flex; justify-content: space-between; padding: 10px 24px; border-block: 1px dashed var(--borde); color: var(--gris); font-size: 11px; letter-spacing: 1px; }
+.dish-list { list-style: none; margin: 0; padding: 22px 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
+.dish-row {
+  display: grid; grid-template-columns: 1fr auto; grid-template-areas: "foto foto" "info precio" "acciones acciones";
+  gap: 10px 8px; background: white; border: 1px solid var(--borde); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 0 var(--borde); transition: transform .15s;
+}
+.dish-row:hover { transform: translateY(-3px); border-color: var(--tomate); }
+.dish-image { grid-area: foto; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--harina); }
+.dish-info { grid-area: info; padding-left: 14px; min-width: 0; }
+.dish-info h3 { font-size: 18px; margin-bottom: 6px; overflow-wrap: anywhere; }
+.dish-category { font-size: 12px; color: var(--gris); text-transform: capitalize; }
+.badge { color: var(--albahaca); background: #e6f1e6; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: bold; }
+.unavailable { color: #7a6a5c; background: #efe7dc; }
+.dish-price { grid-area: precio; padding-right: 14px; font: bold 20px Georgia, serif; color: var(--tomate); white-space: nowrap; }
+.dish-actions { grid-area: acciones; display: flex; justify-content: space-between; border-top: 1px dashed var(--borde); padding: 4px 10px; background: #fdf1ee; }
+.empty { padding: 40px 24px; color: var(--gris); text-align: center; font-style: italic; }
+.usage-note { color: var(--gris); font-size: 13px; margin-top: 22px; }
+footer { display: flex; justify-content: space-between; gap: 12px; color: var(--gris); font-size: 12px; border-top: 1px dashed var(--borde); margin-top: 18px; }
 
-/* 5. Confirmación de borrado y ayudas para teclado y lectores de pantalla. */
-dialog { width: calc(100% - 40px); max-width: 420px; padding: 26px; border: 0; border-radius: 10px; color: inherit; }
-dialog p { margin-top: 12px; }
-dialog::backdrop { background: #25252599; }
-.dialog-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
-.dialog-actions .primary { width: auto; }
+/* 5. Ayudas para teclado y lectores de pantalla. */
 .skip-link { position: absolute; top: -80px; padding: 10px; background: white; }
 .skip-link:focus { top: 0; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
+/* 6. Responsive. Breakpoint 1 (tablet): el formulario pasa debajo de la carta. */
 @media (max-width: 900px) {
   .workspace { grid-template-columns: 1fr; }
+  .editor { position: static; }
 }
+/* Breakpoint 2 (móvil): todo en una columna y las tarjetas se vuelven filas. */
 @media (max-width: 540px) {
   main, .site-header, footer { padding: 16px; }
+  .site-header { border-radius: 0; }
   .brand span, .header-label { display: none; }
-  .intro { align-items: flex-start; flex-direction: column; padding-top: 8px; }
-  h1 { font-size: 30px; }
-  .section-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
-  .filters { grid-template-columns: minmax(0, 1fr) 100px; }
-  .dish-row { grid-template-columns: 48px minmax(0, 1fr) auto; padding: 14px; gap: 10px; }
-  .dish-image { width: 48px; height: 48px; }
-  .dish-actions { grid-column: 2 / -1; justify-content: flex-end; }
+  .intro { align-items: flex-start; flex-direction: column; padding: 36px 22px 26px; }
+  h1 { font-size: 32px; }
+  .section-heading { align-items: flex-start; flex-direction: column; gap: 4px; padding: 20px 16px 14px; }
+  .filters { grid-template-columns: minmax(0, 1fr) 110px; padding: 0 16px 18px; }
+  .dish-list { grid-template-columns: 1fr; padding: 16px; gap: 12px; }
+  .dish-row { grid-template-columns: 76px minmax(0, 1fr) auto; grid-template-areas: "foto info precio" "foto acciones acciones"; align-items: center; }
+  .dish-image { height: 100%; aspect-ratio: auto; min-height: 96px; }
+  .dish-info { padding: 12px 0 0; }
+  .dish-price { padding: 12px 12px 0 0; font-size: 17px; }
+  .dish-actions { border: 0; padding: 0 8px 6px 0; justify-content: flex-end; }
   footer { flex-direction: column; }
 }

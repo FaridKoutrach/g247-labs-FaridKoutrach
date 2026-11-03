@@ -1,5 +1,7 @@
 # Cómo entender esta práctica
 
+> **Hecho con IA.** Esta guía de estudio la generó Codex el 02-11-2026 al simplificar la práctica, y Claude la actualizó el 03-11-2026 cuando se reescribió el código. Explica qué hace cada archivo y en qué orden leerlos. La hemos leído y la usamos para estudiar y preparar la presentación; no es un requisito del enunciado.
+
 No hace falta memorizarla palabra por palabra: el enunciado exige poder explicar lo entregado. Los comentarios de cada archivo te indican su función.
 
 ## Quién usa la página
@@ -28,8 +30,8 @@ El navegador manda una petición; Express decide qué función ejecuta, valida l
 
 ```text
 public/app.js → routes → controller → service → store
-                                        ↓
-                                    validators
+                              ↓
+                          validators
 ```
 
 ## Orden para estudiarla
@@ -39,17 +41,17 @@ public/app.js → routes → controller → service → store
 | `src/server.js` | Abre el puerto 3000 al ejecutar npm start. |
 | `src/app.js` | Instala JSON, rutas, archivos estáticos y errores, en ese orden. |
 | `src/routes/platos.js` | Relaciona una URL y un método HTTP con una función. |
-| `src/controllers/platosController.js` | Lee req y responde con res y el status correcto. |
-| `src/services/platosService.js` | Valida, filtra, ordena y calcula estadísticas. |
-| `src/data/store.js` | Guarda platos en un Map; los datos desaparecen al reiniciar. |
+| `src/controllers/platosController.js` | Lee req, valida con los validadores, llama al servicio y responde con res y el status correcto (`return res.status(404)...`). |
+| `src/services/platosService.js` | Filtra, ordena, pagina y calcula estadísticas. Es el único que usa el almacén. |
+| `src/data/store.js` | Guarda los platos en un array; los datos desaparecen al reiniciar. |
 | `src/validators/` | Comprueba campos y consultas, y reúne todas las incidencias. |
 | `src/middleware/` | Registra peticiones y responde a errores de forma común. |
-| `public/index.html` | Estructura semántica, formulario y plantilla de una fila. |
+| `public/index.html` | Estructura semántica: cabecera, carta, buscador y formulario. |
 | `public/styles.css` | Flexbox, Grid, colores, foco visible y adaptación a móvil. |
-| `public/app.js` | fetch, validación inicial y eventos de crear/editar/borrar/buscar. |
+| `public/app.js` | 7 bloques: hablar con la API (fetch + response.ok), mensajes y errores, pintar la carta, cargar con filtros, formulario (POST/PUT), borrar (DELETE) y botones. |
 | `AI/` | Pruebas HTTP del agente y registro de su revisión. Es obligatorio. |
 
-Ejemplo para explicarlo: «Al añadir Pizza Diavola, el formulario convierte el precio a número y manda POST /platos. La ruta llama al controlador, el servicio valida y el almacén genera un id. La respuesta es 201 con Location; después el cliente vuelve a pedir la carta».
+Ejemplo para explicarlo: «Al añadir Pizza Diavola, el formulario convierte el precio a número y manda POST /platos. La ruta llama al controlador, el controlador valida los datos (si fallan, responde 400), el servicio pide al almacén que lo guarde y el almacén genera un id. La respuesta es 201 con Location; después el cliente vuelve a pedir la carta».
 
 ## Seis operaciones que sí debes distinguir
 
