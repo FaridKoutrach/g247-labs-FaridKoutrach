@@ -62,4 +62,16 @@ Cada integrante escribe su parte con sus palabras y la sube con su propia cuenta
 
 ### Jorge Nuño
 
-_(pendiente)_
+### Jorge Nuño
+
+**Qué he probado.** Descargué el repositorio, lo arranqué con `npm start` y probé la página: [creé un plato y apareció en la carta, con precio 0 salió el error debajo del campo, el nombre no me dejaba pasar de 80 letras, con «pizza» y «na» salió …, y editar y borrar funcionaron sin recargar], y con el servidor encendido `npm test` dio 11 PASS.
+
+**Revisión del repositorio.** Antes de entregar revisé el repositorio contra el enunciado con ayuda de Claude y detecté que yo no aparecía como integrante, que este registro decía que los alumnos aún no habíamos revisado nada y que el código usaba cosas que no hemos dado en clase; [se lo pasé a Farid y] se corrigió en los últimos commits.
+
+**Un archivo explicado.** En `src/validators/platoValidator.js` el bucle solo recorre los cuatro campos del plato, así que un `id` o un campo inventado se ignoran; los errores se van guardando en un array en lugar de parar en el primero, y con `partial: true` (PATCH) solo se comprueban los campos que llegan.
+
+**Qué acepto y qué cambiaría.** Acepto el tester de caja negra porque prueba la API como lo haría cualquier otro cliente, sin ver el código, pero le añadiría [comprobaciones de la interfaz, porque el fallo del filtro de categoría lo encontramos a mano y el agente no podía verlo].
+
+**Qué he aprendido.** Que todo lo que llega por la URL es texto (`?disponible=true` es la cadena "true"), por eso `queryValidator.js` lo comprueba y lo convierte a booleano, y que `/stats` va antes de `/:id` en las rutas para que «stats» no se tome como un id.
+
+*Las pruebas y la revisión son mías; Claude me ayudó a organizarla y redactarla.*
