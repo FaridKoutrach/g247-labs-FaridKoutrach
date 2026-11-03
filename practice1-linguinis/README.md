@@ -35,7 +35,7 @@ npm start
 
 Abrir http://localhost:3000. No abrir `public/index.html` directamente: `fetch` necesita el servidor. Para elegir otro puerto en PowerShell: `$env:PORT=3001; npm start`.
 
-**Para estudiar:** empieza por [LEEME-PRIMERO.md](LEEME-PRIMERO.md). Mantén abierta la terminal de `npm start`: con el servidor apagado una pestaña antigua puede mostrar contenido en caché mientras fallan imágenes y peticiones nuevas.
+Mantén abierta la terminal de `npm start` mientras uses la página. Hay una guía de estudio del código en [LEEME-PRIMERO.md](LEEME-PRIMERO.md) (hecha con IA y revisada por nosotros).
 
 ```sh
 npm test
@@ -160,10 +160,10 @@ Los requisitos externos al código son publicar la versión en GitHub y entregar
 
 ## Relación con los laboratorios
 
-Se retoman el tema, el nombre del restaurante, los seis platos, las imágenes aportadas, la estructura semántica, la identidad de la pizzería (ahora con colores de pizzería: tomate, albahaca y harina, y la carta en tarjetas con foto) y los patrones Flexbox, Grid y breakpoint del laboratorio. Se corrigen las rutas absolutas de imágenes para que funcionen en otros equipos. Los ejercicios JavaScript disponibles son de sintaxis inicial; no se ha encontrado una API Express previa entre los archivos facilitados. Por eso el backend se implementa aquí desde cero y no se afirma reutilizar uno inexistente. No se incorporan login, Python ni páginas ajenas al recurso.
+Se retoman el tema, el nombre del restaurante, los seis platos, sus imágenes, la estructura semántica y los patrones Flexbox, Grid y breakpoint de los laboratorios. Aplicamos las correcciones recibidas: rutas relativas en lugar de `file:///C:/…` (L1), colores en variables CSS reutilizadas en tarjetas y formulario (reto del L2) y separar los datos de la función que los filtra (reto del L3, en `platosService.js`). No teníamos una API Express previa de los laboratorios, así que el backend se ha hecho desde cero. No se incluyen login ni otros recursos (quedan fuera del alcance de la Práctica 1).
 
 ## IA, revisión y entrega
 
-`AI/agents.md` documenta el único tester agent, su contrato y sus comprobaciones HTTP. `AI/review-log.md` distingue las aportaciones, la revisión real y las limitaciones. La aplicación se ha elaborado con asistencia de IA (Codex y Claude), incluidos los comentarios explicativos del código, que se han mantenido para entender y explicar cada parte; el estudiante debe revisar y poder explicar el contenido antes de entregar.
+`AI/agents.md` documenta el único tester agent (su prompt, el contrato que recibe y sus comprobaciones HTTP) y `.claude/` contiene su definición y su skill para Claude Code. `AI/review-log.md` recoge cada aportación de la IA (qué se pidió, qué devolvió y qué aceptamos, corregimos o rechazamos, con el motivo) y la revisión personal de cada integrante. La aplicación se ha elaborado con asistencia de IA (Codex y Claude), incluidos los comentarios explicativos del código. La hemos revisado, probado en el navegador y comprobado con el agente tester (11/11 grupos, 163 respuestas).
 
-La entrega en Canvas es el **3 de noviembre de 2026**, antes de la hora indicada en la actividad. La entrega requiere un repositorio GitHub y el SHA de la versión publicada. No basta con esta carpeta local. Tras publicar, ejecutar `git rev-parse HEAD` en el repositorio para obtener el SHA. No se inventan contribuciones, tutorías pasadas ni identidades de colaboradores.
+Entrega: enlace al commit de GitHub en la actividad de Canvas (3 de noviembre de 2026).

@@ -30,7 +30,7 @@ Rutas que debes cubrir (todas cuelgan de `/platos`): `GET /`, `POST /`, `GET /st
 
 Bucle de trabajo:
 1. Con el servidor arrancado (`npm start`), ejecuta `npm test`.
-2. Si algo falla, NO lo arregles tú (no puedes tocar `src/`): explica qué petición falla, qué esperabas según el README y qué llegó, para que el estudiante lo corrija.
+2. Si algo falla, NO lo arregles tú (no puedes tocar `src/`): explica qué petición falla, qué esperabas según el README y qué llegó, para que lo corrijamos nosotros.
 3. Cuando te digan que está corregido, vuelve a ejecutar `npm test`.
 4. Repite hasta que todos los grupos estén en verde (PASS). Entonces has terminado.
 
